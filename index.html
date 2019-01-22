@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Gamedev Canvas Workshop</title>
+    <title>Breakout - Classic Arcade Game Remake</title>
     <style>
     	* { padding: 0; margin: 0; }
     	canvas { background: #eee; display: block; margin: 0 auto; }
@@ -10,31 +10,44 @@
 </head>
 <body>
 
-<canvas id="myCanvas" width="480" height="320"></canvas>
+<canvas id="myCanvas" width="480" height="320">
+  The game is supposed to show here.
+  If you can see this text, the game has failed to render.
+</canvas>
 
 <script>
-	// JavaScript code goes here
+
+  // initial setup
   var canvas = document.getElementById("myCanvas");
   var ctx = canvas.getContext("2d");
 
-  ctx.beginPath();
-  ctx.rect(20, 40, 50, 50);
-  ctx.fillStyle = "#FF0000";
-  ctx.fill();
-  ctx.closePath();
+  // ball starting position
+  var x = canvas.width/2;
+  var y = canvas.height-30;
 
-  ctx.beginPath();
-  ctx.arc(240, 160, 20, 0, Math.PI*2, false);
-  ctx.fillStyle = "green";
-  ctx.fill();
-  ctx.closePath();
+  // distance ball should move
+  var dx = 2;
+  var dy = -2;
 
-  ctx.beginPath();
-  ctx.rect(160, 10, 100, 40);
-  ctx.strokeStyle = "rgba(0, 0, 255, 0.5)";
-  ctx.stroke();
-  ctx.closePath();
-  
+  function drawBall() {
+    ctx.beginPath();
+    ctx.arc(x, y, 10, 0, Math.PI*2);
+    ctx.fillStyle = "#0095DD";
+    ctx.fill();
+    ctx.closePath();
+  }
+
+  function draw() {
+    // clear screen every frame
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // redraw elements
+    drawBall();
+    // game logic
+    x += dx;
+    y += dy;
+  }
+  setInterval(draw, 10);
+
 </script>
 
 </body>
