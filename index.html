@@ -1,51 +1,70 @@
 <!DOCTYPE html>
-<html>
-<head>
+<html lang="en" dir="ltr">
+  <head>
     <meta charset="utf-8" />
     <title>Breakout - Classic Arcade Game Remake</title>
-    <style>
-    	* { padding: 0; margin: 0; }
-    	canvas { background: #eee; display: block; margin: 0 auto; }
-    </style>
-</head>
-<body>
-
-<canvas id="myCanvas" width="480" height="320">
-  The game is supposed to show here.
-  If you can see this text, the game has failed to render.
-</canvas>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+  </head>
+  <body>
+    <canvas id="myCanvas">
+      The game is supposed to show here.
+      If you can see this text, the game has failed to render.
+    </canvas>
+  </body>
+</html>
 
 <script>
 
   // initial setup
-  var canvas = document.getElementById("myCanvas");
-  var ctx = canvas.getContext("2d");
+  const canvas = document.getElementById("myCanvas");
+  let ballRadius = 10;
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  ballRadius = 0.02 * window.innerHeight;
+
+  let ctx = canvas.getContext("2d");
 
   // ball starting position
-  var x = canvas.width/2;
-  var y = canvas.height-30;
+  let x = canvas.width/2;
+  let y = canvas.height-30;
 
   // distance ball should move
-  var dx = 2;
-  var dy = -2;
+  let dx = 5;
+  let dy = -5;
 
   function drawBall() {
     ctx.beginPath();
-    ctx.arc(x, y, 10, 0, Math.PI*2);
-    ctx.fillStyle = "#0095DD";
+    ctx.arc(x, y, ballRadius, 0, Math.PI*2);
+    ctx.fillStyle = "grey";
     ctx.fill();
     ctx.closePath();
   }
 
   function draw() {
+
     // clear screen every frame
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     // redraw elements
     drawBall();
+
     // game logic
     x += dx;
     y += dy;
+
+    // check that ball is on screen, else change direction
+    if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
+      // check if ball touches left or right edge of canvas
+      dx = -dx;
+    }
+    if(y + dy > canvas.height-ballRadius || y + dy < ballRadius) {
+      // check if ball touches top or bottom edge of canvas
+      dy = -dy;
+    }
   }
+
+
+
   setInterval(draw, 10);
 
 </script>
