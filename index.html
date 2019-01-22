@@ -1,73 +1,130 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8" />
-    <title>Breakout - Classic Arcade Game Remake</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
-  </head>
-  <body>
-    <canvas id="myCanvas">
-      The game is supposed to show here.
-      If you can see this text, the game has failed to render.
-    </canvas>
-  </body>
-</html>
 
-<script>
+<head>
+  <meta charset="utf-8" />
+  <title>Breakout - Classic Arcade Game Remake</title>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
 
-  // initial setup
-  const canvas = document.getElementById("myCanvas");
-  let ballRadius = 10;
-  canvas.width  = window.innerWidth;
-  canvas.height = window.innerHeight;
-  ballRadius = 0.02 * window.innerHeight;
+<body>
+  <h1>Breakout!</h1>
+  <canvas id="myCanvas">
+    The game is supposed to show here.
+    If you can see this text, the game has failed to render.
+  </canvas>
 
-  let ctx = canvas.getContext("2d");
+  <script>
+    /**************
+      CANVAS SETUP
+    **************/
+    const canvas = document.getElementById("myCanvas");
+    let ctx = canvas.getContext("2d");
 
-  // ball starting position
-  let x = canvas.width/2;
-  let y = canvas.height-30;
 
-  // distance ball should move
-  let dx = 5;
-  let dy = -5;
+    /**************
+      PADDLE SETUP
+    **************/
+    let paddleHeight = 10;
+    let paddleWidth = 75;
+    let paddleX = ((canvas.width - paddleWidth) / 2);
 
-  function drawBall() {
-    ctx.beginPath();
-    ctx.arc(x, y, ballRadius, 0, Math.PI*2);
-    ctx.fillStyle = "grey";
-    ctx.fill();
-    ctx.closePath();
-  }
-
-  function draw() {
-
-    // clear screen every frame
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // redraw elements
-    drawBall();
-
-    // game logic
-    x += dx;
-    y += dy;
-
-    // check that ball is on screen, else change direction
-    if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
-      // check if ball touches left or right edge of canvas
-      dx = -dx;
+    // draw paddle
+    function drawPaddle() {
+      ctx.beginPath();
+      ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
+      ctx.fillStyle = "#0095DD";
+      ctx.fill();
+      ctx.closePath();
     }
-    if(y + dy > canvas.height-ballRadius || y + dy < ballRadius) {
-      // check if ball touches top or bottom edge of canvas
-      dy = -dy;
+
+    /**************
+       BALL SETUP
+    **************/
+    let ballRadius = 7;
+
+    // ball starting position
+    let x = canvas.width / 2;
+    let y = canvas.height - 30;
+
+    // distance ball should move
+    let dx = 2.5;
+    let dy = -2.5;
+
+    // draw ball
+    function drawBall() {
+      ctx.beginPath();
+      ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+      ctx.fillStyle = "grey";
+      ctx.fill();
+      ctx.closePath();
     }
-  }
 
+    /**************
+     CONTROLS SETUP
+    **************/
+    let rightPressed = false;
+    let leftPressed = false;
 
+    document.addEventListener("keydown", keyDownHandler, false);
+    document.addEventListener("keyup", keyUpHandler, false);
 
-  setInterval(draw, 10);
+    function keyDownHandler(e) {
+      console.log(e.key);
+      if (e.key == "Right" || e.key == "ArrowRight") {
+        rightPressed = true;
+      } else if (e.key == "Left" || e.key == "ArrowLeft") {
+        leftPressed = true
+      }
+    }
 
-</script>
+    function keyUpHandler(e) {
+      if (e.key == "Right" || e.key == "ArrowRight") {
+        rightPressed = false;
+      } else if (e.key == "Left" || e.key == "ArrowLeft") {
+        leftPressed = false;
+      }
+    }
+
+    /**************
+     MOVE PADDLE
+    **************/
+    function movePaddle() {
+      if(rightPressed && paddleX < canvas.width-paddleWidth) {
+          paddleX += 7;
+      }
+      else if(leftPressed && paddleX > 0) {
+          paddleX -= 7;
+      }
+    }
+
+    /**************
+       GAME LOGIC
+    **************/
+    function draw() {
+      // clear screen every frame
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // redraw elements
+      drawBall();
+      movePaddle();
+      drawPaddle();
+      // game logic
+      x += dx;
+      y += dy;
+      // check that ball is on screen, else change direction
+      if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+        // check if ball touches left or right edge of canvas
+        dx = -dx;
+      }
+      if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
+        // check if ball touches top or bottom edge of canvas
+        dy = -dy;
+      }
+    }
+
+    setInterval(draw, 10);
+  </script>
 
 </body>
+
 </html>
