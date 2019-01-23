@@ -4,23 +4,36 @@
 <head>
   <meta charset="utf-8" />
   <title>Breakout - Classic Arcade Game Remake</title>
+  <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 
 <body>
-  <h1>Breakout!</h1>
+
   <canvas id="myCanvas">
     The game is supposed to show here.
     If you can see this text, the game has failed to render.
   </canvas>
+  <h1>Breakout</h1>
 
   <script>
     /**************
       CANVAS SETUP
     **************/
-    const canvas = document.getElementById("myCanvas");
+    let canvas = document.getElementById("myCanvas");
     let ctx = canvas.getContext("2d");
+    resize();
 
+    // resize to occupy full screen
+    window.addEventListener("resize", function(){
+      resize();
+    }, true);
+
+    function resize() {
+      canvas.setAttribute('width', window.innerWidth * 0.9);
+      canvas.setAttribute('height', window.innerHeight * 0.8);
+      console.log('resize!')
+    }
 
     /**************
       PADDLE SETUP
