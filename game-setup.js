@@ -144,6 +144,15 @@ function keyUpHandler(e) {
   }
 }
 
+document.addEventListener("mousemove", mouseMoveHandler, false);
+
+function mouseMoveHandler(e) {
+    let relativeX = e.clientX - canvas.offsetLeft;
+    if(relativeX > 0 && relativeX < canvas.width) {
+        paddleX = relativeX - paddleWidth/2;
+    }
+}
+
 // swiped left on mobile
 document.addEventListener('swiped-left', function(e) {
   console.log(e.target); // the element that was swiped
