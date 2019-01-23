@@ -5,17 +5,6 @@ let canvas = document.getElementById("myCanvas");
 let ctx = canvas.getContext("2d");
 resize();
 
-// resize to occupy full screen
-window.addEventListener("resize", function(){
-  resize();
-}, true);
-
-function resize() {
-  canvas.setAttribute('width', window.innerWidth * 0.9);
-  canvas.setAttribute('height', window.innerHeight * 0.8);
-  console.log('resize!')
-}
-
 /**************
   PADDLE SETUP
 **************/
@@ -42,8 +31,8 @@ let x = canvas.width / 2;
 let y = canvas.height - window.innerHeight * 2/3;
 
 // distance ball should move
-let dx = 4;
-let dy = 4;
+let dx = 5;
+let dy = 5;
 
 // draw ball
 function drawBall() {
@@ -52,6 +41,23 @@ function drawBall() {
   ctx.fillStyle = "grey";
   ctx.fill();
   ctx.closePath();
+}
+
+/**************
+COLLISION DETECTION
+**************/
+function collisionDetection() {
+  for(let c=0; c<brickColumnCount; c++) {
+    for(let r=0; r<brickRowCount; r++) {
+      let b = bricks[c][r];
+      if(b.status == 1) {
+        if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
+          dy = -dy;
+          b.status = 0;
+        }
+      }
+    }
+  }
 }
 
 /**************
@@ -90,14 +96,58 @@ document.addEventListener('swiped-right', function(e) {
   console.log(e.target); // the element that was swiped
 });
 
-/**************
- MOVE PADDLE
-**************/
-function movePaddle() {
-  if(rightPressed && paddleX < canvas.width-paddleWidth) {
-      paddleX += 13;
+/*************
+  BRICK SETUP
+*************/
+var brickRowCount = 3;
+var brickColumnCount = 5;
+// let brickWidth = 75;
+// let brickHeight = 20;
+let brickPadding = 10;
+let brickOffsetTop = 30;
+let brickOffsetLeft = 30;
+
+let bricks = [];
+for(let c=0; c<brickColumnCount; c++) {
+  bricks[c] = [];
+  for(let r=0; r<brickRowCount; r++) {
+    bricks[c][r] = { x: 0, y: 0, status: 1 };
   }
-  else if(leftPressed && paddleX > 0) {
-      paddleX -= 13;
+}
+
+function drawBricks() {
+  for(let c=0; c<brickColumnCount; c++) {
+    for(let r=0; r<brickRowCount; r++) {
+      if(bricks[c][r].status == 1) {
+        let brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
+        let brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
+        bricks[c][r].x = brickX;
+        bricks[c][r].y = brickY;
+        ctx.beginPath();
+        ctx.rect(brickX, brickY, brickWidth, brickHeight);
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+      }
+    }
   }
+}
+
+/*************
+UPDATE SIZES ON WINDOW RESIZE
+*************/
+
+window.addEventListener("resize", function(){
+  resize();
+}, true);
+
+function resize() {
+  console.log('resizing window, update UI!')
+  // resie canvas
+  canvas.setAttribute('width', window.innerWidth * 0.9);
+  canvas.setAttribute('height', window.innerHeight * 0.8);
+
+  // resize bricks
+  brickWidth = (canvas.width - (30 * 3) - 10) / 5;
+  brickHeight = canvas.height * 0.02;
 }

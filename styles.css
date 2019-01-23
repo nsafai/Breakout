@@ -15,6 +15,7 @@ html, body {
   margin:0;
   font-family:Helvetica;
   font-size:16px;
+  font-family: 'Press Start 2P', cursive;
 }
 
 body {
@@ -32,13 +33,59 @@ body {
 }
 
 h1 {
-  margin:none;
+  margin: 0;
   text-align: center;
-  font-size: 6em;
-  font-family: 'Press Start 2P', cursive;
+  font-size: 3.5em;
   color: #c0392b;
 }
 
-.game-over {
+h3 {
+  font-size:2em;
+  text-align: center;
+}
+
+#game-over {
+  width: 100%;
+  text-align:center;
+  position: fixed; /* or absolute */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color:var(--medium-grey);
+}
+
+#game-over button {
+  font-size: 1.3em;
+  padding: 0.8em 1.5em;
+  background-color: var(--green);
+  color: white;
+  border-radius: 3px 3px 5px 5px;
+
+  -webkit-transition: none;
+  -moz-transition: none;
+  transition: none;
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  outline: none;
+  position: relative;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  transition: all 0.3s;
+  box-shadow: 0 3px #1c622c;
+}
+
+#game-over button:hover {
+  box-shadow: 0 5px #1c622c;
+  /* top: -2px; */
+  /* color: white; */
+  text-decoration: none;
+}
+
+.hidden {
   display:none; /* hide by default */
 }

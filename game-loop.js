@@ -1,3 +1,9 @@
+/*************
+   SETTINGS
+*************/
+let interval = setInterval(draw, 10);
+let paddleSpeed = 13;
+
 /**************
    GAME LOGIC
 **************/
@@ -5,8 +11,10 @@ function draw() {
   // clear screen every frame
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   // redraw elements
+  drawBricks();
   drawBall();
   movePaddle();
+  collisionDetection();
   drawPaddle();
   // game logic
   x += dx;
@@ -29,10 +37,22 @@ function draw() {
     }
     else {
       // console.log("GAME OVER");
+      const gameover_title = document.getElementById("game-over");
+      gameover_title.classList.toggle("hidden");
       // document.location.reload();
       clearInterval(interval); // Needed for Chrome to end game
     }
   }
 }
 
-let interval = setInterval(draw, 10);
+/**************
+ MOVE PADDLE
+**************/
+function movePaddle() {
+  if(rightPressed && paddleX < canvas.width-paddleWidth) {
+      paddleX += paddleSpeed;
+  }
+  else if(leftPressed && paddleX > 0) {
+      paddleX -= paddleSpeed;
+  }
+}
