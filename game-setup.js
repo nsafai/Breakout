@@ -3,7 +3,57 @@
 **************/
 let canvas = document.getElementById("myCanvas");
 let ctx = canvas.getContext("2d");
+
+/*************
+  BRICK SETUP
+*************/
+let brickRowCount = 3;
+let brickColumnCount = 5;
+// let brickWidth = 75;
+// let brickHeight = 20;
+let brickPadding = 10;
+let brickOffsetTop = 40;
+let brickOffsetLeft = 30;
+
+let bricks = [];
+for(let c=0; c<brickColumnCount; c++) {
+  bricks[c] = [];
+  for(let r=0; r<brickRowCount; r++) {
+    bricks[c][r] = { x: 0, y: 0, status: 1 };
+  }
+}
+
+function drawBricks() {
+  for(let c=0; c<brickColumnCount; c++) {
+    for(let r=0; r<brickRowCount; r++) {
+      if(bricks[c][r].status == 1) {
+        let brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
+        let brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
+        bricks[c][r].x = brickX;
+        bricks[c][r].y = brickY;
+        ctx.beginPath();
+        ctx.rect(brickX, brickY, brickWidth, brickHeight);
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+      }
+    }
+  }
+}
+
+// resize once upon first load afte brick setup
 resize();
+
+/**************
+  SCORE SETUP
+**************/
+let score = 0;
+
+function drawScore() {
+  ctx.font = "14px 'Press Start 2P'";
+  ctx.fillStyle = "#252A2E";
+  ctx.fillText("Score: "+score, 20, 28);
+}
 
 /**************
   PADDLE SETUP
@@ -54,6 +104,13 @@ function collisionDetection() {
         if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
           dy = -dy;
           b.status = 0;
+          score++;
+          if(score == brickRowCount*brickColumnCount) {
+            console.log('user won!');
+            let win_banner = document.getElementById("win-banner");
+            win_banner.classList.toggle("hidden");
+            clearInterval(interval); // Needed for Chrome to end game
+          }
         }
       }
     }
@@ -96,42 +153,6 @@ document.addEventListener('swiped-right', function(e) {
   console.log(e.target); // the element that was swiped
 });
 
-/*************
-  BRICK SETUP
-*************/
-var brickRowCount = 3;
-var brickColumnCount = 5;
-// let brickWidth = 75;
-// let brickHeight = 20;
-let brickPadding = 10;
-let brickOffsetTop = 30;
-let brickOffsetLeft = 30;
-
-let bricks = [];
-for(let c=0; c<brickColumnCount; c++) {
-  bricks[c] = [];
-  for(let r=0; r<brickRowCount; r++) {
-    bricks[c][r] = { x: 0, y: 0, status: 1 };
-  }
-}
-
-function drawBricks() {
-  for(let c=0; c<brickColumnCount; c++) {
-    for(let r=0; r<brickRowCount; r++) {
-      if(bricks[c][r].status == 1) {
-        let brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
-        let brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
-        bricks[c][r].x = brickX;
-        bricks[c][r].y = brickY;
-        ctx.beginPath();
-        ctx.rect(brickX, brickY, brickWidth, brickHeight);
-        ctx.fillStyle = "#0095DD";
-        ctx.fill();
-        ctx.closePath();
-      }
-    }
-  }
-}
 
 /*************
 UPDATE SIZES ON WINDOW RESIZE
@@ -148,6 +169,6 @@ function resize() {
   canvas.setAttribute('height', window.innerHeight * 0.8);
 
   // resize bricks
-  brickWidth = (canvas.width - (30 * 3) - 10) / 5;
+  brickWidth = (canvas.width - (brickColumnCount * brickPadding * 2)) / brickColumnCount;
   brickHeight = canvas.height * 0.02;
 }

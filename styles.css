@@ -44,7 +44,7 @@ h3 {
   text-align: center;
 }
 
-#game-over {
+#game-over, #win-banner {
   width: 100%;
   text-align:center;
   position: fixed; /* or absolute */
@@ -54,13 +54,12 @@ h3 {
   color:var(--medium-grey);
 }
 
-#game-over button {
+#game-over button, #win-banner button {
   font-size: 1.3em;
   padding: 0.8em 1.5em;
   background-color: var(--green);
   color: white;
   border-radius: 3px 3px 5px 5px;
-
   -webkit-transition: none;
   -moz-transition: none;
   transition: none;
@@ -79,10 +78,8 @@ h3 {
   box-shadow: 0 3px #1c622c;
 }
 
-#game-over button:hover {
+#game-over button:hover, #win-banner button:hover {
   box-shadow: 0 5px #1c622c;
-  /* top: -2px; */
-  /* color: white; */
   text-decoration: none;
 }
 

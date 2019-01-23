@@ -10,13 +10,15 @@ let paddleSpeed = 13;
 function draw() {
   // clear screen every frame
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  // redraw elements
+
+  // game logic
   drawBricks();
   drawBall();
   movePaddle();
   collisionDetection();
   drawPaddle();
-  // game logic
+  drawScore();
+
   x += dx;
   y += dy;
   if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
@@ -28,7 +30,7 @@ function draw() {
     dy = -dy; // "bounce" change direction
   }
 
-  else if(y + dy > canvas.height - ballRadius) {
+  else if(y + dy > canvas.height - ( ballRadius / 2 )) {
     // check if ball touches bottom edge of canvas
 
     if(x > paddleX && x < paddleX + paddleWidth) {
@@ -39,7 +41,6 @@ function draw() {
       // console.log("GAME OVER");
       const gameover_title = document.getElementById("game-over");
       gameover_title.classList.toggle("hidden");
-      // document.location.reload();
       clearInterval(interval); // Needed for Chrome to end game
     }
   }

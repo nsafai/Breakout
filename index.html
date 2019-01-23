@@ -16,8 +16,12 @@
   </canvas>
   <h1>Breakout</h1>
   <div id="game-over" class="hidden">
-    <h3>Game Over</h3>
-    <button onclick="location.reload();">Try Again!</button>
+    <h3 id="alert-message">Game Over</h3>
+    <button onclick="location.reload();">Try Again</button>
+  </div>
+  <div id="win-banner" class="hidden">
+    <h3 id="alert-message">You Win!</h3>
+    <button onclick="location.reload();">Play Again</button>
   </div>
 
   <script type="text/javascript" src="game-setup.js"></script>
