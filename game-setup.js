@@ -11,9 +11,9 @@ let brickRowCount = 3;
 let brickColumnCount = 5;
 // let brickWidth = 75;
 // let brickHeight = 20;
-let brickPadding = 10;
-let brickOffsetTop = 40;
-let brickOffsetLeft = 30;
+let brickPadding = 20;
+let brickOffsetTop = 60;
+let brickOffsetLeft = 80;
 
 let bricks = [];
 for(let c=0; c<brickColumnCount; c++) {
@@ -52,7 +52,7 @@ let score = 0;
 function drawScore() {
   ctx.font = "16px 'Press Start 2P'";
   ctx.fillStyle = "#252A2E";
-  ctx.fillText("Score: "+score, 20, 28);
+  ctx.fillText("Score: "+score, 20, 38);
 }
 
 /**************
@@ -61,7 +61,7 @@ function drawScore() {
 function drawLives() {
     ctx.font = "16px 'Press Start 2P'";
     ctx.fillStyle = "#252A2E";
-    ctx.fillText("Lives: "+lives, canvas.width-145, 28);
+    ctx.fillText("Lives: "+lives, canvas.width-145, 38);
 }
 
 /**************
@@ -90,8 +90,8 @@ let x = canvas.width / 2;
 let y = canvas.height - window.innerHeight * 2/3;
 
 // distance ball should move
-let dx = 5;
-let dy = 5;
+let dx = 7;
+let dy = 7;
 
 // draw ball
 function drawBall() {
@@ -186,6 +186,6 @@ function resize() {
   canvas.setAttribute('height', window.innerHeight * 0.8);
 
   // resize bricks
-  brickWidth = (canvas.width - (brickColumnCount * brickPadding * 2)) / brickColumnCount;
+  brickWidth = (canvas.width - 240) / brickColumnCount;
   brickHeight = canvas.height * 0.02;
 }
