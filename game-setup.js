@@ -50,9 +50,18 @@ resize();
 let score = 0;
 
 function drawScore() {
-  ctx.font = "14px 'Press Start 2P'";
+  ctx.font = "16px 'Press Start 2P'";
   ctx.fillStyle = "#252A2E";
   ctx.fillText("Score: "+score, 20, 28);
+}
+
+/**************
+ LIVES SETUP
+**************/
+function drawLives() {
+    ctx.font = "16px 'Press Start 2P'";
+    ctx.fillStyle = "#252A2E";
+    ctx.fillText("Lives: "+lives, canvas.width-145, 28);
 }
 
 /**************
@@ -109,7 +118,6 @@ function collisionDetection() {
             console.log('user won!');
             let win_banner = document.getElementById("win-banner");
             win_banner.classList.toggle("hidden");
-            clearInterval(interval); // Needed for Chrome to end game
           }
         }
       }

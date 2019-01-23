@@ -1,8 +1,8 @@
 /*************
    SETTINGS
 *************/
-let interval = setInterval(draw, 10);
 let paddleSpeed = 13;
+let lives = 3;
 
 /**************
    GAME LOGIC
@@ -18,6 +18,7 @@ function draw() {
   collisionDetection();
   drawPaddle();
   drawScore();
+  drawLives();
 
   x += dx;
   y += dy;
@@ -38,12 +39,21 @@ function draw() {
       dy = -dy;
     }
     else {
-      // console.log("GAME OVER");
-      const gameover_title = document.getElementById("game-over");
-      gameover_title.classList.toggle("hidden");
-      clearInterval(interval); // Needed for Chrome to end game
+      lives--;
+      if(!lives) {
+        const gameover_title = document.getElementById("game-over");
+        gameover_title.classList.toggle("hidden");
+      }
+      else {
+        x = canvas.width/2;
+        y = canvas.height-30;
+        // dx = 3;
+        // dy = -3;
+        paddleX = (canvas.width-paddleWidth)/2;
+      }
     }
   }
+  requestAnimationFrame(draw);
 }
 
 /**************
@@ -57,3 +67,5 @@ function movePaddle() {
       paddleX -= paddleSpeed;
   }
 }
+
+draw();
