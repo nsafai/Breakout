@@ -1,123 +1,131 @@
-/**************
-  CANVAS SETUP
-**************/
-let canvas = document.getElementById("myCanvas");
-let ctx = canvas.getContext("2d");
+/* eslint-disable semi */
+/* eslint-disable no-undef */
 
-/*************
-  BRICK SETUP
-*************/
-let brickRowCount = 3;
-let brickColumnCount = 5;
-// let brickWidth = 75;
-// let brickHeight = 20;
-let brickPadding = 20;
-let brickOffsetTop = 60;
-let brickOffsetLeft = 80;
+/* SETTINGS */
+const paddleSpeed = 13
+let lives = 3
 
-let bricks = [];
-for(let c=0; c<brickColumnCount; c++) {
-  bricks[c] = [];
-  for(let r=0; r<brickRowCount; r++) {
-    bricks[c][r] = { x: 0, y: 0, status: 1 };
+/* CANVAS SETUP */
+const canvas = document.getElementById('myCanvas')
+const ctx = canvas.getContext('2d')
+
+/* BRICK SETUP */
+const brickRowCount = 3
+const brickColumnCount = 5
+let brickWidth = 75
+let brickHeight = 20
+const brickPadding = 20
+const brickOffsetTop = 60
+const brickOffsetLeft = 80
+
+const bricks = []
+for (let c = 0; c < brickColumnCount; c += 1) {
+  bricks[c] = []
+  for (let r = 0; r < brickRowCount; r += 1) {
+    bricks[c][r] = { x: 0, y: 0, status: 1 }
   }
 }
 
 function drawBricks() {
-  for(let c=0; c<brickColumnCount; c++) {
-    for(let r=0; r<brickRowCount; r++) {
-      if(bricks[c][r].status == 1) {
-        let brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
-        let brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
-        bricks[c][r].x = brickX;
-        bricks[c][r].y = brickY;
-        ctx.beginPath();
-        ctx.rect(brickX, brickY, brickWidth, brickHeight);
-        ctx.fillStyle = "#0095DD";
-        ctx.fill();
-        ctx.closePath();
+  for (let c = 0; c < brickColumnCount; c += 1) {
+    for (let r = 0; r < brickRowCount; r += 1) {
+      if (bricks[c][r].status === 1) {
+        const brickX = (c * (brickWidth + brickPadding)) + brickOffsetLeft
+        const brickY = (r * (brickHeight + brickPadding)) + brickOffsetTop
+        bricks[c][r].x = brickX
+        bricks[c][r].y = brickY
+        ctx.beginPath()
+        ctx.rect(brickX, brickY, brickWidth, brickHeight)
+        ctx.fillStyle = '#0095DD'
+        ctx.fill()
+        ctx.closePath()
       }
     }
   }
 }
 
-// resize once upon first load afte brick setup
-resize();
+/* UPDATE SIZES ON WINDOW RESIZE */
 
-/**************
-  SCORE SETUP
-**************/
-let score = 0;
+function resize() {
+  console.log('resizing window, update UI!')
+  // resie canvas
+  canvas.setAttribute('width', window.innerWidth * 0.9)
+  canvas.setAttribute('height', window.innerHeight * 0.8)
+
+  // resize bricks
+  brickWidth = (canvas.width - 240) / brickColumnCount
+  brickHeight = canvas.height * 0.02
+}
+
+window.addEventListener('resize', () => resize(), true)
+
+// resize once upon first load afte brick setup
+resize()
+
+/* SCORE SETUP */
+let score = 0
 
 function drawScore() {
-  ctx.font = "16px 'Press Start 2P'";
-  ctx.fillStyle = "#252A2E";
-  ctx.fillText("Score: "+score, 20, 38);
+  ctx.font = '16px \'Press Start 2P\''
+  ctx.fillStyle = '#252A2E'
+  ctx.fillText(`Score: ${score}`, 20, 38)
 }
 
-/**************
- LIVES SETUP
-**************/
+/* LIVES SETUP */
 function drawLives() {
-    ctx.font = "16px 'Press Start 2P'";
-    ctx.fillStyle = "#252A2E";
-    ctx.fillText("Lives: "+lives, canvas.width-145, 38);
+  ctx.font = '16px \'Press Start 2P\''
+  ctx.fillStyle = '#252A2E'
+  ctx.fillText(`Lives: ${lives}`, canvas.width - 145, 38)
 }
 
-/**************
-  PADDLE SETUP
-**************/
-let paddleHeight = 23;
-let paddleWidth = 200;
-let paddleX = ((canvas.width - paddleWidth) / 2);
+/* PADDLE SETUP */
+const paddleHeight = 23
+const paddleWidth = 200
+let paddleX = ((canvas.width - paddleWidth) / 2)
 
 // draw paddle
 function drawPaddle() {
-  ctx.beginPath();
-  ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-  ctx.fillStyle = "#e67e22";
-  ctx.fill();
-  ctx.closePath();
+  ctx.beginPath()
+  ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight)
+  ctx.fillStyle = '#e67e22'
+  ctx.fill()
+  ctx.closePath()
 }
 
-/**************
-   BALL SETUP
-**************/
-let ballRadius = 16;
+/* BALL SETUP */
+const ballRadius = 16
 
 // ball starting position
-let x = canvas.width / 2;
-let y = canvas.height - window.innerHeight * 2/3;
+let x = canvas.width / 2
+let y = canvas.height - window.innerHeight * (1 / 2)
 
 // distance ball should move
-let dx = 7;
-let dy = 7;
+let dx = 7
+let dy = 7
 
 // draw ball
 function drawBall() {
-  ctx.beginPath();
-  ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-  ctx.fillStyle = "grey";
-  ctx.fill();
-  ctx.closePath();
+  ctx.beginPath()
+  ctx.arc(x, y, ballRadius, 0, Math.PI * 2)
+  ctx.fillStyle = 'grey'
+  ctx.fill()
+  ctx.closePath()
 }
 
-/**************
-COLLISION DETECTION
-**************/
+/* COLLISION DETECTION */
 function collisionDetection() {
-  for(let c=0; c<brickColumnCount; c++) {
-    for(let r=0; r<brickRowCount; r++) {
-      let b = bricks[c][r];
-      if(b.status == 1) {
-        if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
-          dy = -dy;
-          b.status = 0;
-          score++;
-          if(score == brickRowCount*brickColumnCount) {
-            console.log('user won!');
-            let win_banner = document.getElementById("win-banner");
-            win_banner.classList.toggle("hidden");
+  for (let c = 0; c < brickColumnCount; c += 1) {
+    for (let r = 0; r < brickRowCount; r += 1) {
+      const b = bricks[c][r]
+      if (b.status === 1) {
+        if (x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
+          dy = -dy
+          b.status = 0
+          score += 1
+          if (score === brickRowCount * brickColumnCount) {
+            console.log('user won!')
+            const winBanner = document.getElementById('win-banner')
+            winBanner.classList.toggle('hidden')
           }
         }
       }
@@ -125,67 +133,103 @@ function collisionDetection() {
   }
 }
 
-/**************
- CONTROLS SETUP
-**************/
-let rightPressed = false;
-let leftPressed = false;
+/* CONTROLS SETUP */
+let rightPressed = false
+let leftPressed = false
 
-document.addEventListener("keydown", keyDownHandler, false);
-document.addEventListener("keyup", keyUpHandler, false);
-
+/* KEYBOARD CONTROLS */
 // arrow key pressed
 function keyDownHandler(e) {
-  console.log(e.key);
-  if (e.key == "Right" || e.key == "ArrowRight") {
-    rightPressed = true;
-  } else if (e.key == "Left" || e.key == "ArrowLeft") {
+  console.log(e.key)
+  if (e.key === 'Right' || e.key === 'ArrowRight') {
+    rightPressed = true
+  } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
     leftPressed = true
   }
 }
 // arrow key released
 function keyUpHandler(e) {
-  if (e.key == "Right" || e.key == "ArrowRight") {
-    rightPressed = false;
-  } else if (e.key == "Left" || e.key == "ArrowLeft") {
-    leftPressed = false;
+  if (e.key === 'Right' || e.key === 'ArrowRight') {
+    rightPressed = false
+  } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
+    leftPressed = false
   }
 }
 
-document.addEventListener("mousemove", mouseMoveHandler, false);
+document.addEventListener('keydown', keyDownHandler, false)
+document.addEventListener('keyup', keyUpHandler, false)
 
+/* MOUSE CONTROLS */
 function mouseMoveHandler(e) {
-    let relativeX = e.clientX - canvas.offsetLeft;
-    if(relativeX > 0 && relativeX < canvas.width) {
-        paddleX = relativeX - paddleWidth/2;
+  const relativeX = e.clientX - canvas.offsetLeft
+  if (relativeX > 0 && relativeX < canvas.width) {
+    paddleX = relativeX - paddleWidth / 2
+  }
+}
+
+document.addEventListener('mousemove', mouseMoveHandler, false)
+
+/* MOVE PADDLE */
+function movePaddle() {
+  if (rightPressed && paddleX < canvas.width - paddleWidth) {
+    paddleX += paddleSpeed
+  } else if (leftPressed && paddleX > 0) {
+    paddleX -= paddleSpeed
+  }
+}
+
+/* MOBILE CONTROLS (WIP) */
+document.addEventListener('swiped-left', (e) => {
+  console.log(e.target); // the element that was swiped
+})
+
+document.addEventListener('swiped-right', (e) => {
+  console.log(e.target); // the element that was swiped
+})
+
+/* GAME LOGIC */
+function draw() {
+  // clear screen every frame
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+  // game logic
+  drawBricks()
+  drawBall()
+  movePaddle()
+  collisionDetection()
+  drawPaddle()
+  drawScore()
+  drawLives()
+
+  x += dx
+  y += dy 
+  if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+    // check if ball touches left or right edge of canvas
+    dx = -dx; // 'bounce' change direction
+  } else if (y + dy < ballRadius) {
+    // check if ball touches top edge of canvas
+    dy = -dy; // 'bounce' change direction
+  } else if (y + dy > canvas.height - (ballRadius / 2)) {
+    // check if ball touches bottom edge of canvas
+
+    if (x > paddleX && x < paddleX + paddleWidth) {
+      // check if is hitting paddle
+      dy = -dy
+    } else {
+      lives -= 1
+      if (!lives) {
+        const gameoverTitle = document.getElementById('game-over')
+        gameoverTitle.classList.toggle('hidden')
+      } else {
+        x = canvas.width / 2
+        y = canvas.height - 30
+        // dx = 3
+        // dy = -3
+        paddleX = (canvas.width - paddleWidth) / 2
+      }
     }
+  }
+  requestAnimationFrame(draw)
 }
 
-// swiped left on mobile
-document.addEventListener('swiped-left', function(e) {
-  console.log(e.target); // the element that was swiped
-});
-
-document.addEventListener('swiped-right', function(e) {
-  console.log(e.target); // the element that was swiped
-});
-
-
-/*************
-UPDATE SIZES ON WINDOW RESIZE
-*************/
-
-window.addEventListener("resize", function(){
-  resize();
-}, true);
-
-function resize() {
-  console.log('resizing window, update UI!')
-  // resie canvas
-  canvas.setAttribute('width', window.innerWidth * 0.9);
-  canvas.setAttribute('height', window.innerHeight * 0.8);
-
-  // resize bricks
-  brickWidth = (canvas.width - 240) / brickColumnCount;
-  brickHeight = canvas.height * 0.02;
-}
+draw()

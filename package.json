@@ -1,0 +1,24 @@
+{
+  "name": "breakout",
+  "version": "1.0.0",
+  "description": "breakout the arcade game",
+  "main": "game-loop.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nsafai/Breakout.git"
+  },
+  "author": "Nicolai Safai",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nsafai/Breakout/issues"
+  },
+  "homepage": "https://github.com/nsafai/Breakout#readme",
+  "devDependencies": {
+    "eslint": "^5.12.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.15.0"
+  }
+}
