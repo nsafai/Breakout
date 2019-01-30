@@ -193,7 +193,9 @@ function collisionDetection() {
     for (let r = 0; r < brickRowCount; r += 1) {
       const brick = bricks[c][r]
       if (brick.status === 1) {
+        // brick still on screen
         if (ball.x > brick.x && ball.x < brick.x + brickWidth && ball.y > brick.y && ball.y < brick.y + brickHeight) {
+          // check if ball and brick are colliding
           ball.dy = -ball.dy
           brick.status = 0
           score += 1
@@ -229,7 +231,7 @@ function draw() {
   collisionDetection()
   drawScore()
   drawLives()
-  
+
   // check if ball touches edges
   if (ball.x + ball.dx > canvas.width - ball.radius || ball.x + ball.dx < ball.radius) {
     // ball touching left or right edge of canvas
