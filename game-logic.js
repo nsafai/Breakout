@@ -34,7 +34,7 @@ class Ball {
 
 class Paddle {
   constructor(canvasWidth, width = 180, height = 23, paddleSpeed = 13) {
-    this.width = canvasWidth / 3
+    this.width = canvasWidth / 4
     this.height = height
     this.x = (canvasWidth - width) / 2 // center the paddle at start
     this.paddleSpeed = paddleSpeed
@@ -58,9 +58,10 @@ class Paddle {
 }
 
 class Brick {
-  constructor(x, y, width = 75, height = 20, status = 1) {
+  constructor(x, y, color = '#0095DD', width = 75, height = 20, status = 1) {
     this.x = x
     this.y = y
+    this.color = color
     this.width = width
     this.height = height
     this.status = status
@@ -69,7 +70,7 @@ class Brick {
   render(ctx) {
     ctx.beginPath()
     ctx.rect(this.x, this.y, this.width, this.height)
-    ctx.fillStyle = '#0095DD'
+    ctx.fillStyle = this.color
     ctx.fill()
     ctx.closePath()
   }
@@ -79,17 +80,14 @@ class Brick {
 const canvas = document.getElementById('myCanvas')
 const ctx = canvas.getContext('2d')
 
-/* CREATE BALL w/ starting position (x,y) */
-const ball = new Ball(canvas.width / 2, window.innerHeight - canvas.height)
-
 /* CREATE BRICKS */
 const brickRowCount = 3
-const brickColumnCount = 5
-let brickWidth = 75
+const brickColumnCount = 7
+let brickWidth = 50
 let brickHeight = 20
-const brickPadding = 20
+const brickPadding = 30
 const brickOffsetTop = 60
-const brickOffsetLeft = 80
+const brickOffsetLeft = 30
 
 const bricks = []
 for (let c = 0; c < brickColumnCount; c += 1) {
@@ -101,12 +99,17 @@ for (let c = 0; c < brickColumnCount; c += 1) {
 
 function drawBricks() {
   for (let c = 0; c < brickColumnCount; c += 1) {
+    // console.log('c: ' + c)
+    const hueValue = 370 / (c + 1)
+    const hue = `hsl(${hueValue}, 90%, 50%)`
+    console.log(hue)
     for (let r = 0; r < brickRowCount; r += 1) {
       if (bricks[c][r].status === 1) {
         const brickX = (c * (brickWidth + brickPadding)) + brickOffsetLeft
         const brickY = (r * (brickHeight + brickPadding)) + brickOffsetTop
+        // console.log('r: ' + r)
 
-        bricks[c][r] = new Brick(brickX, brickY, brickWidth, brickHeight, 1)
+        bricks[c][r] = new Brick(brickX, brickY, hue, brickWidth, brickHeight, 1)
         bricks[c][r].render(ctx)
       }
     }
@@ -127,8 +130,11 @@ function resize() {
 
 window.addEventListener('resize', () => resize(), true)
 
-// resize once upon first load afte brick setup
+// resize once upon first load after brick setup
 resize()
+
+/* CREATE BALL w/ starting position (x,y) */
+const ball = new Ball(15, canvas.height / 2)
 
 /* CREATE PADDLE w/ starting position x */
 const paddle = new Paddle(canvas.width)
@@ -223,32 +229,33 @@ function draw() {
   collisionDetection()
   drawScore()
   drawLives()
-  ball.render(ctx)
-  ball.move()
-
+  
+  // check if ball touches edges
   if (ball.x + ball.dx > canvas.width - ball.radius || ball.x + ball.dx < ball.radius) {
-    // check if ball touches left or right edge of canvas
-    ball.dx = -ball.dx; // 'bounce' change direction
+    // ball touching left or right edge of canvas
+    ball.dx = -ball.dx; // ball changes direction
   } else if (ball.y + ball.dy < ball.radius) {
-    // check if ball touches top edge of canvas
-    ball.dy = -ball.dy; // 'bounce' change direction
+    // ball touching top edge of canvas
+    ball.dy = -ball.dy; // ball changes direction
   } else if (ball.y + ball.dy > canvas.height - (ball.radius / 2)) {
-    // check if ball touches bottom edge of canvas
-
+    // ball touching bottom edge of canvas
     if (ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
-      // check if is hitting paddle
+      // ball is hitting paddle and should change direction (="bounce")
       ball.dy = -ball.dy
-    } else {
+    } else if (lives > 0) {
       lives -= 1
-      if (!lives) {
-        const gameoverTitle = document.getElementById('game-over')
-        gameoverTitle.classList.toggle('hidden')
-      } else {
-        ball.x = canvas.width / 2
-        ball.y = canvas.height - 30
-        paddle.x = (canvas.width - paddle.width) / 2
-      }
+
+      // reset ball position
+      ball.x = canvas.width - 40
+      ball.y = canvas.height / 2
     }
+  }
+  if (lives > 0) {
+    ball.render(ctx)
+    ball.move()
+  } else {
+    const gameoverTitle = document.getElementById('game-over')
+    gameoverTitle.classList.remove('hidden')
   }
   requestAnimationFrame(draw)
 }
